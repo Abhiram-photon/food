@@ -38,7 +38,9 @@ export function listOrganizations(
     params.push(filter.role);
   }
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-  const rows = ctx.db.all<OrganizationRow & { user_count: number; listing_count: number; reservation_count: number }>(
+  const rows = ctx.db.all<
+    OrganizationRow & { user_count: number; listing_count: number; reservation_count: number }
+  >(
     `SELECT o.*,
             (SELECT COUNT(*) FROM users u WHERE u.organization_id = o.id) AS user_count,
             (SELECT COUNT(*) FROM listings l WHERE l.provider_id = o.id) AS listing_count,
@@ -109,7 +111,9 @@ export function reviewOrganization(
     });
   });
 
-  const users = ctx.db.all<UserRow>('SELECT * FROM users WHERE organization_id = ?', [organizationId]);
+  const users = ctx.db.all<UserRow>('SELECT * FROM users WHERE organization_id = ?', [
+    organizationId,
+  ]);
   for (const user of users) {
     void ctx.emailSender.send({
       to: user.email,

@@ -4,7 +4,15 @@ import { api, errorMessage } from '../api/client';
 import { useApiQuery } from '../api/hooks';
 import { useAuth } from '../state/AuthContext';
 import { CountdownBadge } from '../components/CountdownBadge';
-import { EmptyState, ErrorState, Field, LoadingState, PageHeader, StatusBadge, Toasts } from '../components/ui';
+import {
+  EmptyState,
+  ErrorState,
+  Field,
+  LoadingState,
+  PageHeader,
+  StatusBadge,
+  Toasts,
+} from '../components/ui';
 import { formatDateTime, formatQuantity, humanizeEnum } from '../lib/format';
 import {
   CATEGORIES,
@@ -41,7 +49,9 @@ export function ProviderPage() {
   const { capabilities } = useAuth();
   const listings = useApiQuery<{ listings: OwnerListing[] }>('/provider/listings');
   const reservations = useApiQuery<{ reservations: ReservationView[] }>('/provider/reservations');
-  const [toasts, setToasts] = useState<Array<{ id: number; tone: 'success' | 'error' | 'info'; text: string }>>([]);
+  const [toasts, setToasts] = useState<
+    Array<{ id: number; tone: 'success' | 'error' | 'info'; text: string }>
+  >([]);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ ...emptyForm });
@@ -77,7 +87,7 @@ export function ProviderPage() {
   }, []);
 
   const myListings = listings.data?.listings ?? [];
-  const incoming = reservations.data?.reservations ?? [];
+  const incoming = useMemo(() => reservations.data?.reservations ?? [], [reservations.data]);
   const pendingVerifications = useMemo(
     () => incoming.filter((reservation) => reservation.status === 'RESERVED'),
     [incoming],
@@ -159,17 +169,28 @@ export function ProviderPage() {
     }
   }
 
-  async function runAction(listing: OwnerListing, action: 'PUBLISH' | 'PAUSE' | 'RESUME' | 'CANCEL') {
+  async function runAction(
+    listing: OwnerListing,
+    action: 'PUBLISH' | 'PAUSE' | 'RESUME' | 'CANCEL',
+  ) {
     setBusyId(listing.id);
     try {
       const reason =
-        action === 'CANCEL' ? window.prompt('Reason for cancelling this listing?') ?? 'Listing cancelled' : undefined;
-      const response = await api.post<{ cancelledReservations: number }>(`/listings/${listing.id}/status`, {
-        action,
-        ...(reason ? { reason } : {}),
-      });
+        action === 'CANCEL'
+          ? (window.prompt('Reason for cancelling this listing?') ?? 'Listing cancelled')
+          : undefined;
+      const response = await api.post<{ cancelledReservations: number }>(
+        `/listings/${listing.id}/status`,
+        {
+          action,
+          ...(reason ? { reason } : {}),
+        },
+      );
       if (action === 'CANCEL' && response.cancelledReservations > 0) {
-        pushToast('info', `Listing cancelled — ${response.cancelledReservations} reservation(s) released.`);
+        pushToast(
+          'info',
+          `Listing cancelled — ${response.cancelledReservations} reservation(s) released.`,
+        );
       } else {
         pushToast('success', `Listing ${action.toLowerCase()}d.`);
       }
@@ -221,7 +242,10 @@ export function ProviderPage() {
 
   return (
     <div>
-      <Toasts toasts={toasts} onDismiss={(id) => setToasts((current) => current.filter((t) => t.id !== id))} />
+      <Toasts
+        toasts={toasts}
+        onDismiss={(id) => setToasts((current) => current.filter((t) => t.id !== id))}
+      />
       <PageHeader
         title="Provider workspace"
         subtitle="List surplus food, watch reservations come in, and verify pickups with the recipient's code."
@@ -238,7 +262,10 @@ export function ProviderPage() {
       />
 
       {!capabilities?.canPublishListing ? (
-        <p className="fr-card mb-6 border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">
+        <p
+          className="fr-card mb-6 border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"
+          role="status"
+        >
           {capabilities?.blockedReason ??
             'Your organization is not approved yet, so listings stay as drafts.'}{' '}
           You can still save drafts — publishing unlocks after admin approval.
@@ -253,7 +280,10 @@ export function ProviderPage() {
             </h2>
             <form className="mt-4 grid gap-4 sm:grid-cols-2" onSubmit={saveListing} noValidate>
               {formError ? (
-                <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 sm:col-span-2" role="alert">
+                <p
+                  className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 sm:col-span-2"
+                  role="alert"
+                >
                   {formError}
                 </p>
               ) : null}
@@ -324,7 +354,12 @@ export function ProviderPage() {
                 />
               </Field>
 
-              <Field label="Unit" htmlFor="unit" required hint={`e.g. ${UNIT_SUGGESTIONS.join(', ')}`}>
+              <Field
+                label="Unit"
+                htmlFor="unit"
+                required
+                hint={`e.g. ${UNIT_SUGGESTIONS.join(', ')}`}
+              >
                 <input
                   id="unit"
                   className="fr-input"
@@ -431,7 +466,9 @@ export function ProviderPage() {
                     className="fr-input"
                     rows={2}
                     value={form.pickupInstructions}
-                    onChange={(event) => setForm({ ...form, pickupInstructions: event.target.value })}
+                    onChange={(event) =>
+                      setForm({ ...form, pickupInstructions: event.target.value })
+                    }
                   />
                 </Field>
               </div>
@@ -447,9 +484,7 @@ export function ProviderPage() {
                   <button
                     type="button"
                     className="fr-btn-secondary"
-                    onClick={() =>
-                      void runAction({ id: editingId } as OwnerListing, 'PUBLISH')
-                    }
+                    onClick={() => void runAction({ id: editingId } as OwnerListing, 'PUBLISH')}
                     disabled={busyId === editingId}
                   >
                     Publish now
@@ -467,7 +502,11 @@ export function ProviderPage() {
           {listings.loading ? (
             <LoadingState label="Loading your listings…" />
           ) : listings.error ? (
-            <ErrorState message={listings.error} onRetry={listings.reload} title="Could not load listings" />
+            <ErrorState
+              message={listings.error}
+              onRetry={listings.reload}
+              title="Could not load listings"
+            />
           ) : myListings.length === 0 ? (
             <EmptyState
               title="No listings yet"
@@ -486,20 +525,28 @@ export function ProviderPage() {
                     <div className="flex items-center gap-2">
                       <StatusBadge status={listing.status} />
                       {listing.status === 'ACTIVE' || listing.status === 'RESERVED_OUT' ? (
-                        <CountdownBadge expiresAt={listing.expiresAt} secondsLeft={listing.secondsLeft} />
+                        <CountdownBadge
+                          expiresAt={listing.expiresAt}
+                          secondsLeft={listing.secondsLeft}
+                        />
                       ) : null}
                     </div>
                   </div>
                   <p className="mt-1 text-xs text-stone-600">
-                    {formatQuantity(listing.quantityRemaining)} of {formatQuantity(listing.quantity)}{' '}
-                    {listing.unit} available · window ends {formatDateTime(listing.windowEnd)}
+                    {formatQuantity(listing.quantityRemaining)} of{' '}
+                    {formatQuantity(listing.quantity)} {listing.unit} available · window ends{' '}
+                    {formatDateTime(listing.windowEnd)}
                   </p>
                   <p className="mt-1 text-xs text-stone-500">
                     {listing.reservedCount} pending · {listing.collectedCount} collected ·{' '}
                     {humanizeEnum(listing.storage)}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <button type="button" className="fr-btn-secondary text-xs" onClick={() => startEdit(listing)}>
+                    <button
+                      type="button"
+                      className="fr-btn-secondary text-xs"
+                      onClick={() => startEdit(listing)}
+                    >
                       Edit
                     </button>
                     {listing.status === 'DRAFT' || listing.status === 'PAUSED' ? (
@@ -508,7 +555,11 @@ export function ProviderPage() {
                         className="fr-btn-primary text-xs"
                         onClick={() => void runAction(listing, 'PUBLISH')}
                         disabled={busyId === listing.id || !capabilities?.canPublishListing}
-                        title={capabilities?.canPublishListing ? undefined : capabilities?.blockedReason ?? ''}
+                        title={
+                          capabilities?.canPublishListing
+                            ? undefined
+                            : (capabilities?.blockedReason ?? '')
+                        }
                       >
                         {listing.status === 'DRAFT' ? 'Publish' : 'Resume'}
                       </button>
@@ -546,7 +597,8 @@ export function ProviderPage() {
               Verify a pickup code
             </h2>
             <p className="mt-1 text-sm text-stone-600">
-              Ask the recipient for their 6-digit code. Codes only work inside the pickup window, once.
+              Ask the recipient for their 6-digit code. Codes only work inside the pickup window,
+              once.
             </p>
             <form className="mt-4 space-y-3" onSubmit={verifyPickup}>
               {verifyError ? (
@@ -555,7 +607,10 @@ export function ProviderPage() {
                 </p>
               ) : null}
               {verifySuccess ? (
-                <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-900" role="status">
+                <p
+                  className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-900"
+                  role="status"
+                >
                   {verifySuccess}
                 </p>
               ) : null}
@@ -567,7 +622,9 @@ export function ProviderPage() {
                   pattern="\d{6}"
                   maxLength={6}
                   value={verifyCode}
-                  onChange={(event) => setVerifyCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
+                  onChange={(event) =>
+                    setVerifyCode(event.target.value.replace(/\D/g, '').slice(0, 6))
+                  }
                   required
                 />
               </Field>
@@ -629,10 +686,13 @@ export function ProviderPage() {
                       <StatusBadge status={reservation.status} />
                     </div>
                     <p className="mt-2 text-xs text-stone-600">
-                      Pickup {formatDateTime(reservation.pickupStart)} → {formatDateTime(reservation.pickupEnd)}
+                      Pickup {formatDateTime(reservation.pickupStart)} →{' '}
+                      {formatDateTime(reservation.pickupEnd)}
                     </p>
                     {reservation.cancelReason ? (
-                      <p className="mt-1 text-xs text-red-700">Cancelled: {reservation.cancelReason}</p>
+                      <p className="mt-1 text-xs text-red-700">
+                        Cancelled: {reservation.cancelReason}
+                      </p>
                     ) : null}
                     {reservation.status === 'RESERVED' ? (
                       <div className="mt-3 flex flex-wrap gap-2">

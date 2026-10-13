@@ -1,5 +1,12 @@
 import { z } from 'zod';
-import { emailSchema, latitudeSchema, longitudeSchema, orgTypeSchema, passwordSchema, roleSchema } from './common';
+import {
+  emailSchema,
+  latitudeSchema,
+  longitudeSchema,
+  orgTypeSchema,
+  passwordSchema,
+  roleSchema,
+} from './common';
 
 export const registerSchema = z.object({
   email: emailSchema,

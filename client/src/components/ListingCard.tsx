@@ -72,9 +72,7 @@ export function ListingCard({ listing, onFocus, highlighted }: ListingCardProps)
       </dl>
 
       {listing.allergens.length > 0 ? (
-        <p className="mt-2 text-xs text-amber-800">
-          Contains: {listing.allergens.join(', ')}
-        </p>
+        <p className="mt-2 text-xs text-amber-800">Contains: {listing.allergens.join(', ')}</p>
       ) : null}
 
       <div className="mt-3 flex items-center justify-between">

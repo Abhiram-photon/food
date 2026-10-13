@@ -91,7 +91,9 @@ export function generatePickupCode(): string {
  * build a fast lookup table, and the 5-attempt lock stops online guessing.
  */
 export function hashPickupCode(code: string, reservationId: string, secret: string): string {
-  return createHmac('sha256', `${secret}:pickup-code`).update(`${reservationId}:${code}`).digest('hex');
+  return createHmac('sha256', `${secret}:pickup-code`)
+    .update(`${reservationId}:${code}`)
+    .digest('hex');
 }
 
 export function verifyPickupCode(
@@ -119,9 +121,12 @@ export function encryptPickupCode(code: string, secret: string): string {
   const cipher = createCipheriv('aes-256-gcm', codeKey(secret), iv);
   const enc = Buffer.concat([cipher.update(code, 'utf8'), cipher.final()]);
   const tag = cipher.getAuthTag();
-  return ['v1', iv.toString('base64url'), tag.toString('base64url'), enc.toString('base64url')].join(
-    ':',
-  );
+  return [
+    'v1',
+    iv.toString('base64url'),
+    tag.toString('base64url'),
+    enc.toString('base64url'),
+  ].join(':');
 }
 
 export function decryptPickupCode(payload: string, secret: string): string | null {
@@ -129,9 +134,16 @@ export function decryptPickupCode(payload: string, secret: string): string | nul
   if (parts.length !== 4 || parts[0] !== 'v1') return null;
   const [, ivStr, tagStr, dataStr] = parts as [string, string, string, string];
   try {
-    const decipher = createDecipheriv('aes-256-gcm', codeKey(secret), Buffer.from(ivStr, 'base64url'));
+    const decipher = createDecipheriv(
+      'aes-256-gcm',
+      codeKey(secret),
+      Buffer.from(ivStr, 'base64url'),
+    );
     decipher.setAuthTag(Buffer.from(tagStr, 'base64url'));
-    const dec = Buffer.concat([decipher.update(Buffer.from(dataStr, 'base64url')), decipher.final()]);
+    const dec = Buffer.concat([
+      decipher.update(Buffer.from(dataStr, 'base64url')),
+      decipher.final(),
+    ]);
     return dec.toString('utf8');
   } catch {
     return null;

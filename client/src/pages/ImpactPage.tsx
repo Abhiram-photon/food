@@ -46,7 +46,11 @@ export function ImpactPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Verified pickups" value={data.totals.pickups} hint="Collected reservations only" />
+        <StatCard
+          label="Verified pickups"
+          value={data.totals.pickups}
+          hint="Collected reservations only"
+        />
         <StatCard
           label="Food rescued"
           value={`${formatQuantity(data.totals.kg)} kg`}
@@ -94,7 +98,8 @@ export function ImpactPage() {
                   <li key={row.key} className="flex items-center justify-between gap-2">
                     <span className="text-stone-700">{humanizeEnum(row.key)}</span>
                     <span className="font-semibold text-stone-900">
-                      {formatQuantity(row.kg)} kg · {row.pickups} pickup{row.pickups === 1 ? '' : 's'}
+                      {formatQuantity(row.kg)} kg · {row.pickups} pickup
+                      {row.pickups === 1 ? '' : 's'}
                     </span>
                   </li>
                 ))}
@@ -112,7 +117,8 @@ export function ImpactPage() {
                   <li key={row.key} className="flex items-center justify-between gap-2">
                     <span className="text-stone-700">{humanizeEnum(row.key)}</span>
                     <span className="font-semibold text-stone-900">
-                      {formatQuantity(row.kg)} kg · {row.pickups} pickup{row.pickups === 1 ? '' : 's'}
+                      {formatQuantity(row.kg)} kg · {row.pickups} pickup
+                      {row.pickups === 1 ? '' : 's'}
                     </span>
                   </li>
                 ))}

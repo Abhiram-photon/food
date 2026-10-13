@@ -1,5 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { createListingFixture, createTestHarness, createUser, inject, type TestHarness, type TestUser } from './helpers';
+import {
+  createListingFixture,
+  createTestHarness,
+  createUser,
+  inject,
+  type TestHarness,
+  type TestUser,
+} from './helpers';
 
 describe('notifications and admin console', () => {
   let harness: TestHarness;
@@ -10,7 +17,11 @@ describe('notifications and admin console', () => {
 
   beforeAll(async () => {
     harness = await createTestHarness();
-    admin = await createUser(harness.db, { role: 'ADMIN', email: 'admin@admin.test', orgStatus: null });
+    admin = await createUser(harness.db, {
+      role: 'ADMIN',
+      email: 'admin@admin.test',
+      orgStatus: null,
+    });
     provider = await createUser(harness.db, {
       role: 'PROVIDER',
       email: 'provider@admin.test',
@@ -145,7 +156,10 @@ describe('notifications and admin console', () => {
       cookie: recipient.cookie,
     });
 
-    const before = await inject(harness.app, { url: '/api/notifications', cookie: provider.cookie });
+    const before = await inject(harness.app, {
+      url: '/api/notifications',
+      cookie: provider.cookie,
+    });
     expect(before.body.unreadCount).toBeGreaterThan(0);
     expect(before.body.notifications[0].readAt).toBeNull();
 
@@ -160,9 +174,9 @@ describe('notifications and admin console', () => {
 
     const after = await inject(harness.app, { url: '/api/notifications', cookie: provider.cookie });
     expect(after.body.unreadCount).toBe(0);
-    expect(after.body.notifications.every((n: { readAt: string | null }) => n.readAt !== null)).toBe(
-      true,
-    );
+    expect(
+      after.body.notifications.every((n: { readAt: string | null }) => n.readAt !== null),
+    ).toBe(true);
 
     // Marking read is scoped to the session user.
     const otherUnread = await inject(harness.app, {

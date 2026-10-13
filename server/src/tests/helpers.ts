@@ -163,6 +163,7 @@ export interface InjectOptions {
 export async function inject(
   app: FastifyInstance,
   options: InjectOptions,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- test bodies are asserted loosely
 ): Promise<{ status: number; body: any; headers: Record<string, unknown> }> {
   const method = options.method ?? 'GET';
   const headers: Record<string, string> = { ...options.headers };

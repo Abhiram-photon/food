@@ -62,7 +62,11 @@ export function BrowsePage() {
         title="Browse surplus food nearby"
         subtitle="Radius, storage type and sort order are all applied server-side. Availability can change between refreshes."
         actions={
-          <button type="button" className="fr-btn-secondary" onClick={() => setShowMap((value) => !value)}>
+          <button
+            type="button"
+            className="fr-btn-secondary"
+            onClick={() => setShowMap((value) => !value)}
+          >
             {showMap ? 'Hide map' : 'Show map'}
           </button>
         }
@@ -122,11 +126,13 @@ export function BrowsePage() {
             onChange={(event) => updateParam('storage', event.target.value)}
           >
             <option value="">Any storage</option>
-            {(data?.availableStorage.length ? data.availableStorage : STORAGE_TYPES).map((option) => (
-              <option key={option} value={option}>
-                {humanizeEnum(option)}
-              </option>
-            ))}
+            {(data?.availableStorage.length ? data.availableStorage : STORAGE_TYPES).map(
+              (option) => (
+                <option key={option} value={option}>
+                  {humanizeEnum(option)}
+                </option>
+              ),
+            )}
           </select>
         </Field>
         <Field label="Sort by" htmlFor="sort">
@@ -162,7 +168,9 @@ export function BrowsePage() {
             Clear filters
           </button>
           <span className="text-sm text-stone-600" aria-live="polite">
-            {loading ? 'Searching…' : `${listings.length} listing${listings.length === 1 ? '' : 's'} in range`}
+            {loading
+              ? 'Searching…'
+              : `${listings.length} listing${listings.length === 1 ? '' : 's'} in range`}
           </span>
         </div>
       </form>
@@ -217,7 +225,8 @@ export function BrowsePage() {
             />
             <p className="text-xs text-stone-600">
               Markers are approximate (rounded to ~1 km). Exact pickup addresses are shared with the
-              recipient organization once a reservation exists. Map data © OpenStreetMap contributors.
+              recipient organization once a reservation exists. Map data © OpenStreetMap
+              contributors.
             </p>
           </div>
         ) : null}

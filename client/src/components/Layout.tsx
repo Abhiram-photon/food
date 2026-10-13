@@ -77,7 +77,11 @@ export function Layout() {
                     {user.organizationName ?? 'Platform admin'} · {humanizeEnum(user.role)}
                   </p>
                 </div>
-                <button type="button" className="fr-btn-secondary" onClick={() => void handleLogout()}>
+                <button
+                  type="button"
+                  className="fr-btn-secondary"
+                  onClick={() => void handleLogout()}
+                >
                   Sign out
                 </button>
               </div>
@@ -110,7 +114,10 @@ export function Layout() {
         </div>
 
         {menuOpen ? (
-          <nav className="border-t border-stone-200 bg-white px-4 py-2 md:hidden" aria-label="Mobile">
+          <nav
+            className="border-t border-stone-200 bg-white px-4 py-2 md:hidden"
+            aria-label="Mobile"
+          >
             <div className="flex flex-col gap-1">
               <NavLink to="/browse" className={navClass} onClick={() => setMenuOpen(false)}>
                 Browse
@@ -159,7 +166,10 @@ export function Layout() {
       </header>
 
       {capabilities?.blockedReason ? (
-        <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900" role="status">
+        <div
+          className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900"
+          role="status"
+        >
           <div className="mx-auto max-w-6xl">{capabilities.blockedReason}</div>
         </div>
       ) : null}
@@ -171,7 +181,8 @@ export function Layout() {
       <footer className="border-t border-stone-200 bg-white px-4 py-6 text-sm text-stone-600">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            FreshRelay — surplus food rescue for Hyderabad and beyond. Local demo build; not for production use.
+            FreshRelay — surplus food rescue for Hyderabad and beyond. Local demo build; not for
+            production use.
           </p>
           <p>
             Source:{' '}

@@ -42,16 +42,22 @@ export function LandingPage() {
             time.
           </p>
           <p className="mt-3 text-base text-stone-700">
-            FreshRelay is the missing middle: providers list surplus food with an expiry and a pickup
-            window, nearby recipient organisations reserve it, and a 6-digit code proves the handover
-            so rescued kilograms are counted honestly.
+            FreshRelay is the missing middle: providers list surplus food with an expiry and a
+            pickup window, nearby recipient organisations reserve it, and a 6-digit code proves the
+            handover so rescued kilograms are counted honestly.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link to={user ? '/provider' : '/register'} className="fr-btn-primary px-5 py-2.5 text-base">
+            <Link
+              to={user ? '/provider' : '/register'}
+              className="fr-btn-primary px-5 py-2.5 text-base"
+            >
               List surplus food
             </Link>
-            <Link to={user ? '/browse' : '/register'} className="fr-btn-secondary px-5 py-2.5 text-base">
+            <Link
+              to={user ? '/browse' : '/register'}
+              className="fr-btn-secondary px-5 py-2.5 text-base"
+            >
               Find food nearby
             </Link>
             <Link to="/browse" className="fr-btn-secondary px-5 py-2.5 text-base">
@@ -68,8 +74,8 @@ export function LandingPage() {
                 1
               </span>
               <span>
-                <strong>Provider lists</strong> surplus with quantity, storage type, allergens, pickup
-                address, window and expiry. Drafts stay private until reviewed.
+                <strong>Provider lists</strong> surplus with quantity, storage type, allergens,
+                pickup address, window and expiry. Drafts stay private until reviewed.
               </span>
             </li>
             <li className="flex gap-3">
@@ -86,8 +92,8 @@ export function LandingPage() {
                 3
               </span>
               <span>
-                <strong>The code verifies</strong> the handover: the recipient shows their 6-digit code,
-                the provider types it, and only then is the pickup counted as rescued food.
+                <strong>The code verifies</strong> the handover: the recipient shows their 6-digit
+                code, the provider types it, and only then is the pickup counted as rescued food.
               </span>
             </li>
             <li className="flex gap-3">
@@ -110,7 +116,11 @@ export function LandingPage() {
           <ErrorState message={stats.error} onRetry={stats.reload} title="Could not load totals" />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard label="Food rescued" value={`${formatQuantity(stats.data?.kg ?? 0)} kg`} hint="Verified pickups only" />
+            <StatCard
+              label="Food rescued"
+              value={`${formatQuantity(stats.data?.kg ?? 0)} kg`}
+              hint="Verified pickups only"
+            />
             <StatCard label="Verified pickups" value={stats.data?.pickups ?? 0} />
             <StatCard
               label="Meals estimated"
@@ -137,8 +147,8 @@ export function LandingPage() {
         <div className="fr-card p-5">
           <h3 className="text-base font-semibold text-stone-900">For caterers & households</h3>
           <p className="mt-2 text-sm text-stone-700">
-            Large event leftovers or a household excess pantry run can be listed with a pickup window
-            that fits your schedule.
+            Large event leftovers or a household excess pantry run can be listed with a pickup
+            window that fits your schedule.
           </p>
         </div>
         <div className="fr-card p-5">

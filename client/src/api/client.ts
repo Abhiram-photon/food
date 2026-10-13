@@ -67,7 +67,9 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   }
 
   if (!response.ok) {
-    const errorBody = payload as { error?: { code?: string; message?: string; details?: unknown } } | null;
+    const errorBody = payload as {
+      error?: { code?: string; message?: string; details?: unknown };
+    } | null;
     throw new ApiError(
       response.status,
       errorBody?.error?.code ?? 'HTTP_ERROR',

@@ -26,9 +26,17 @@ export function LoginPage() {
     try {
       const user = await login(email.trim(), password);
       const redirectTo = (location.state as { from?: string } | null)?.from;
-      navigate(redirectTo ?? (user.role === 'ADMIN' ? '/admin' : user.role === 'PROVIDER' ? '/provider' : '/recipient'), {
-        replace: true,
-      });
+      navigate(
+        redirectTo ??
+          (user.role === 'ADMIN'
+            ? '/admin'
+            : user.role === 'PROVIDER'
+              ? '/provider'
+              : '/recipient'),
+        {
+          replace: true,
+        },
+      );
     } catch (cause) {
       setError(errorMessage(cause));
     } finally {
@@ -91,7 +99,8 @@ export function LoginPage() {
       <div className="fr-card mt-4 p-4">
         <h2 className="text-sm font-semibold text-stone-800">Demo accounts (local only)</h2>
         <p className="mt-1 text-xs text-stone-600">
-          Password for every seeded account: <code className="rounded bg-stone-100 px-1">Password123!</code>
+          Password for every seeded account:{' '}
+          <code className="rounded bg-stone-100 px-1">Password123!</code>
         </p>
         <ul className="mt-2 space-y-1 text-sm">
           {DEMO_ACCOUNTS.map((account) => (

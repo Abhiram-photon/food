@@ -80,7 +80,16 @@ async function createAccount(db: Db, config: AppConfig, account: SeedAccount): P
     db.run(
       `INSERT INTO users (id, organization_id, email, password_hash, display_name, role, is_active, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)`,
-      [userId, organizationId, account.email, passwordHash, account.displayName, account.role, now, now],
+      [
+        userId,
+        organizationId,
+        account.email,
+        passwordHash,
+        account.displayName,
+        account.role,
+        now,
+        now,
+      ],
     );
   });
 
@@ -106,8 +115,6 @@ interface ListingSeed {
   quantityRemaining?: number;
   instructions: string;
 }
-
-const HYDERABAD = { lat: 17.385, lng: 78.4867 };
 
 function insertListing(
   db: Db,
@@ -377,7 +384,8 @@ async function main(): Promise<void> {
     {
       providerIndex: 0,
       title: 'Catered veg biryani trays — 3 hrs left',
-      description: 'Six full trays of vegetable biryani from an event. Kept at safe holding temperature.',
+      description:
+        'Six full trays of vegetable biryani from an event. Kept at safe holding temperature.',
       category: 'PREPARED_MEALS',
       quantity: 18,
       unit: 'kg',
@@ -394,7 +402,8 @@ async function main(): Promise<void> {
     {
       providerIndex: 1,
       title: 'Chilled paneer and yoghurt crates',
-      description: 'Dairy reaching best-before tomorrow: paneer blocks, curd tubs, buttermilk packs.',
+      description:
+        'Dairy reaching best-before tomorrow: paneer blocks, curd tubs, buttermilk packs.',
       category: 'DAIRY',
       quantity: 24,
       unit: 'kg',
@@ -429,7 +438,8 @@ async function main(): Promise<void> {
     {
       providerIndex: 1,
       title: 'Near-expiry pantry staples',
-      description: 'Rice, atta and lentils past their retail display date but well within safe use.',
+      description:
+        'Rice, atta and lentils past their retail display date but well within safe use.',
       category: 'PANTRY',
       quantity: 120,
       unit: 'kg',
@@ -497,7 +507,8 @@ async function main(): Promise<void> {
     {
       providerIndex: 1,
       title: 'Frozen mixed vegetables',
-      description: 'Frozen peas, corn and mixed veg from a broken freezer line — keep frozen in transit.',
+      description:
+        'Frozen peas, corn and mixed veg from a broken freezer line — keep frozen in transit.',
       category: 'PRODUCE',
       quantity: 85,
       unit: 'kg',
@@ -548,7 +559,12 @@ async function main(): Promise<void> {
   ];
 
   const listingIds = listingSeeds.map((seed) =>
-    insertListing(db2, providerIds[seed.providerIndex] ?? null, providerIds[seed.providerIndex] ? providers[seed.providerIndex]!.id : admin.id, seed),
+    insertListing(
+      db2,
+      providerIds[seed.providerIndex] ?? null,
+      providerIds[seed.providerIndex] ? providers[seed.providerIndex]!.id : admin.id,
+      seed,
+    ),
   );
 
   // ---- Historical listings + collected reservations for the impact chart ----

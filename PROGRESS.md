@@ -88,7 +88,10 @@ Status legend: `[x]` done · `[~]` in progress · `[ ]` not started
 - [x] `/admin` pending organizations + platform totals
 - [x] Notification bell with unread count
 - [x] Loading / empty / error states everywhere; labelled inputs; visible focus rings
-- [~] Manual end-to-end check: register → publish → reserve → verify → impact updates
+- [x] Route-level smoke test mounts every page in jsdom (stands in for manual clicking)
+- [x] Scripted end-to-end run through the Vite proxy: register → create/publish listing →
+      reserve (code returned) → wrong code rejected → correct code collected → impact + admin
+      totals + notifications update → CSRF header enforced on mutating requests
 
 ## P8 — Docs + final verification
 
@@ -97,7 +100,19 @@ Status legend: `[x]` done · `[~]` in progress · `[ ]` not started
 - [x] .env.example
 - [x] `npm install && npm run seed && npm run dev && npm test && npm run typecheck && npm run build`
 
+## Final verification (fresh clone behaviour)
+
+- [x] `npm install` — 0 errors, no native build step
+- [x] `npm run seed` — idempotent, prints the 7 demo logins
+- [x] `npm run dev` — API on :3001 and Vite on :5173, `/api` proxied, `allowedHosts` open for previews
+- [x] `npm test` — 56 server + 27 client tests green
+- [x] `npm run typecheck` — server + client clean
+- [x] `npm run build` — server bundled to `server/dist`, client to `client/dist`
+- [x] `npm run lint` / `npm run format:check` — clean
+- [x] Every route serves the SPA shell and renders (smoke test + deep-link checks)
+
 ## Known follow-ups after v1
 
-- Playwright E2E only if browsers install cleanly (documented as skipped otherwise)
+- Playwright E2E: browsers cannot be downloaded here (`playwright install chromium` fails);
+  documented in `docs/DECISIONS.md` §8 with the exact command and error.
 - Deferred features are listed at the bottom of `docs/DECISIONS.md`

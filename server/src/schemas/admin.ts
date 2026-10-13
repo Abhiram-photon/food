@@ -35,6 +35,12 @@ export interface PlatformTotals {
   organizations: { total: number; pending: number; approved: number; rejected: number };
   listings: { total: number; active: number; reservedOut: number; expired: number; draft: number };
   reservations: { total: number; reserved: number; collected: number; cancelled: number };
-  impact: { pickups: number; quantity: number; kg: number; mealsEstimate: number; kgPerMeal: number };
+  impact: {
+    pickups: number;
+    quantity: number;
+    kg: number;
+    mealsEstimate: number;
+    kgPerMeal: number;
+  };
   monthly: Array<{ month: string; pickups: number; kg: number }>;
 }

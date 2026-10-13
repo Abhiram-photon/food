@@ -151,7 +151,9 @@ export function migrate(db: DatabaseSync): void {
     );
   `);
   const applied = new Set(
-    (db.prepare('SELECT id FROM schema_migrations').all() as Array<{ id: number }>).map((r) => r.id),
+    (db.prepare('SELECT id FROM schema_migrations').all() as Array<{ id: number }>).map(
+      (r) => r.id,
+    ),
   );
   for (const migration of MIGRATIONS) {
     if (applied.has(migration.id)) continue;

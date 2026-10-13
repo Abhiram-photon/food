@@ -14,7 +14,12 @@ import {
 } from '../services/auth';
 import { parseInput } from '../http/validate';
 import { requireUser, type AppContext } from '../http/context';
-import { changePasswordSchema, loginSchema, registerSchema, updateProfileSchema } from '../schemas/auth';
+import {
+  changePasswordSchema,
+  loginSchema,
+  registerSchema,
+  updateProfileSchema,
+} from '../schemas/auth';
 
 export function registerAuthRoutes(app: FastifyInstance, ctx: AppContext): void {
   const { db, config } = ctx;
@@ -66,7 +71,10 @@ export function registerAuthRoutes(app: FastifyInstance, ctx: AppContext): void 
     const sessionUser = requireUser(request);
     const input = parseInput(updateProfileSchema, request.body);
     if (!sessionUser.organization) {
-      return { user: toPublicUser(sessionUser.user, null), capabilities: capabilitiesFor(sessionUser.user, null) };
+      return {
+        user: toPublicUser(sessionUser.user, null),
+        capabilities: capabilitiesFor(sessionUser.user, null),
+      };
     }
     const organization = updateOrganizationProfile(db, sessionUser.organization.id, input);
     return {
@@ -78,7 +86,12 @@ export function registerAuthRoutes(app: FastifyInstance, ctx: AppContext): void 
   app.post('/api/auth/password', async (request) => {
     const sessionUser = requireSession(request.sessionUser);
     const input = parseInput(changePasswordSchema, request.body);
-    await changePassword({ db, config }, sessionUser.user.id, input.currentPassword, input.newPassword);
+    await changePassword(
+      { db, config },
+      sessionUser.user.id,
+      input.currentPassword,
+      input.newPassword,
+    );
     return { ok: true };
   });
 }

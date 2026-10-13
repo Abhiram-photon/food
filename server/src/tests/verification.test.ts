@@ -39,7 +39,11 @@ describe('pickup code verification', () => {
       organizationName: 'Verify Food Bank',
       orgStatus: 'APPROVED',
     });
-    admin = await createUser(harness.db, { role: 'ADMIN', email: 'admin@verify.test', orgStatus: null });
+    admin = await createUser(harness.db, {
+      role: 'ADMIN',
+      email: 'admin@verify.test',
+      orgStatus: null,
+    });
   });
 
   afterAll(async () => {

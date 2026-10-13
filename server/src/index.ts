@@ -14,7 +14,12 @@ async function main(): Promise<void> {
   }
 
   const db = createDb(databasePath);
-  const { app } = await buildApp({ db, config, logger: true, sweepIntervalMs: config.sweepIntervalMs });
+  const { app } = await buildApp({
+    db,
+    config,
+    logger: true,
+    sweepIntervalMs: config.sweepIntervalMs,
+  });
 
   if (config.usingDefaultSecret) {
     app.log.warn(

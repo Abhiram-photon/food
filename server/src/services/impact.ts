@@ -43,7 +43,10 @@ interface CollectedQuery {
   params: unknown[];
 }
 
-function collectedQuery(scope: 'platform' | 'provider' | 'recipient', organizationId?: string): CollectedQuery {
+function collectedQuery(
+  scope: 'platform' | 'provider' | 'recipient',
+  organizationId?: string,
+): CollectedQuery {
   const base = `
     SELECT r.id, r.quantity, r.unit, r.collected_at, r.listing_id,
            l.title AS listing_title, l.category, l.storage,
@@ -54,10 +57,16 @@ function collectedQuery(scope: 'platform' | 'provider' | 'recipient', organizati
     JOIN organizations rec ON rec.id = r.recipient_id
     WHERE r.status = 'COLLECTED'`;
   if (scope === 'provider') {
-    return { sql: `${base} AND l.provider_id = ? ORDER BY r.collected_at DESC`, params: [organizationId] };
+    return {
+      sql: `${base} AND l.provider_id = ? ORDER BY r.collected_at DESC`,
+      params: [organizationId],
+    };
   }
   if (scope === 'recipient') {
-    return { sql: `${base} AND r.recipient_id = ? ORDER BY r.collected_at DESC`, params: [organizationId] };
+    return {
+      sql: `${base} AND r.recipient_id = ? ORDER BY r.collected_at DESC`,
+      params: [organizationId],
+    };
   }
   return { sql: `${base} ORDER BY r.collected_at DESC`, params: [] };
 }
@@ -115,11 +124,7 @@ export function buildImpactStats(ctx: ImpactContext, actor: SessionUser): Impact
   }
 
   const scopeWhere =
-    scope === 'provider'
-      ? 'WHERE provider_id = ?'
-      : scope === 'recipient'
-        ? 'WHERE 1 = 0'
-        : '';
+    scope === 'provider' ? 'WHERE provider_id = ?' : scope === 'recipient' ? 'WHERE 1 = 0' : '';
   const listingCounts =
     scope === 'provider'
       ? db.get<{ total: number; active: number; reserved: number }>(

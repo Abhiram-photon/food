@@ -23,8 +23,8 @@ function RequireRole({ roles, children }: { roles: Role[]; children: React.React
       <div className="fr-card p-6" role="alert">
         <h1 className="text-lg font-semibold text-stone-900">Not available for your role</h1>
         <p className="mt-1 text-sm text-stone-600">
-          This page is for {roles.map((role) => role.toLowerCase()).join(' / ')} accounts. You are signed
-          in as {user.role.toLowerCase()}.
+          This page is for {roles.map((role) => role.toLowerCase()).join(' / ')} accounts. You are
+          signed in as {user.role.toLowerCase()}.
         </p>
       </div>
     );

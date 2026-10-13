@@ -36,9 +36,11 @@ export function capabilitiesFor(user: UserRow, organization: OrganizationRow | n
     blockedReason =
       'Your organization is still pending review. You can browse and prepare, but publishing and reserving unlock after an admin approves you.';
   } else if (!isAdmin && organization && organization.status === 'REJECTED') {
-    blockedReason = 'Your organization application was rejected. Contact the FreshRelay admin team.';
+    blockedReason =
+      'Your organization application was rejected. Contact the FreshRelay admin team.';
   } else if (!isAdmin && !organization) {
-    blockedReason = 'Your account is not linked to an organization. Contact the FreshRelay admin team.';
+    blockedReason =
+      'Your account is not linked to an organization. Contact the FreshRelay admin team.';
   }
 
   return {
@@ -121,7 +123,10 @@ export async function login(ctx: AuthContext, email: string, password: string): 
   return user;
 }
 
-export function createSession(ctx: AuthContext, userId: string): { token: string; session: SessionRow } {
+export function createSession(
+  ctx: AuthContext,
+  userId: string,
+): { token: string; session: SessionRow } {
   const { db, config } = ctx;
   const token = randomToken(32);
   const csrfToken = randomToken(24);
@@ -137,7 +142,14 @@ export function createSession(ctx: AuthContext, userId: string): { token: string
   db.run(
     `INSERT INTO sessions (id, user_id, token_hash, csrf_token, expires_at, created_at)
      VALUES (?, ?, ?, ?, ?, ?)`,
-    [session.id, session.user_id, session.token_hash, session.csrf_token, session.expires_at, session.created_at],
+    [
+      session.id,
+      session.user_id,
+      session.token_hash,
+      session.csrf_token,
+      session.expires_at,
+      session.created_at,
+    ],
   );
   // Opportunistic cleanup of long-expired sessions keeps the table small in this single-process MVP.
   db.run('DELETE FROM sessions WHERE expires_at < ?', [now.toISOString()]);
@@ -147,7 +159,9 @@ export function createSession(ctx: AuthContext, userId: string): { token: string
 export function resolveSession(ctx: AuthContext, token: string | undefined): SessionUser | null {
   if (!token) return null;
   const { db } = ctx;
-  const session = db.get<SessionRow>('SELECT * FROM sessions WHERE token_hash = ?', [digest(token)]);
+  const session = db.get<SessionRow>('SELECT * FROM sessions WHERE token_hash = ?', [
+    digest(token),
+  ]);
   if (!session) return null;
   if (Date.parse(session.expires_at) <= Date.now()) {
     db.run('DELETE FROM sessions WHERE id = ?', [session.id]);
@@ -156,8 +170,9 @@ export function resolveSession(ctx: AuthContext, token: string | undefined): Ses
   const user = db.get<UserRow>('SELECT * FROM users WHERE id = ?', [session.user_id]);
   if (!user || !user.is_active) return null;
   const organization = user.organization_id
-    ? (db.get<OrganizationRow>('SELECT * FROM organizations WHERE id = ?', [user.organization_id]) ??
-      null)
+    ? (db.get<OrganizationRow>('SELECT * FROM organizations WHERE id = ?', [
+        user.organization_id,
+      ]) ?? null)
     : null;
   return { user, organization, session };
 }

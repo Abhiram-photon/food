@@ -4,7 +4,11 @@ import type { ReactNode } from 'react';
 
 export function Spinner({ label = 'Loading…' }: { label?: string }) {
   return (
-    <div className="flex items-center gap-3 text-sm text-stone-600" role="status" aria-live="polite">
+    <div
+      className="flex items-center gap-3 text-sm text-stone-600"
+      role="status"
+      aria-live="polite"
+    >
       <span
         className="h-4 w-4 animate-spin rounded-full border-2 border-stone-300 border-t-emerald-700"
         aria-hidden="true"

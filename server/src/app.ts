@@ -70,7 +70,11 @@ export async function buildApp(options: BuildAppOptions): Promise<AppBundle> {
       }
       // Defence in depth: if the client supplies the session CSRF token it must match.
       const token = request.headers['x-csrf-token'];
-      if (request.sessionUser && typeof token === 'string' && token !== request.sessionUser.session.csrf_token) {
+      if (
+        request.sessionUser &&
+        typeof token === 'string' &&
+        token !== request.sessionUser.session.csrf_token
+      ) {
         throw new AppError(403, 'CSRF_TOKEN_MISMATCH', 'Invalid CSRF token.');
       }
     }

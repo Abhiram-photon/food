@@ -22,7 +22,10 @@ export const listingInputSchema = z.object({
     .transform((value) => {
       if (value === undefined) return [] as string[];
       const parts = Array.isArray(value) ? value : value.split(',');
-      return parts.map((p) => p.trim()).filter(Boolean).slice(0, 20);
+      return parts
+        .map((p) => p.trim())
+        .filter(Boolean)
+        .slice(0, 20);
     }),
   storage: storageSchema,
   pickupAddress: z.string().trim().min(4, 'Pickup address is required').max(240),

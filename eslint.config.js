@@ -4,6 +4,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
 
 export default tseslint.config(
   {
@@ -33,7 +34,16 @@ export default tseslint.config(
   },
   {
     files: ['client/**/*.{ts,tsx}'],
+    plugins: { 'react-hooks': reactHooks },
     languageOptions: { globals: { ...globals.browser } },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
+  {
+    files: ['**/*.mjs', '**/*.config.{js,ts}'],
+    languageOptions: { globals: { ...globals.node } },
   },
   prettier,
 );

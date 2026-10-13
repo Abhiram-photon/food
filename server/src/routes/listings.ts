@@ -32,7 +32,7 @@ export function registerListingRoutes(app: FastifyInstance, ctx: AppContext): vo
   app.get('/api/listings', async (request) => {
     const query = parseInput(searchQuerySchema, request.query);
     sweepStatuses(db);
-    return searchListings({ db, config }, query, request.sessionUser);
+    return searchListings({ db, config }, query);
   });
 
   app.get('/api/listings/:id', async (request) => {
@@ -58,11 +58,14 @@ export function registerListingRoutes(app: FastifyInstance, ctx: AppContext): vo
       ? capabilitiesFor(request.sessionUser.user, request.sessionUser.organization)
       : null;
     const status = computeListingStatus(row);
-    if (!request.sessionUser) blockedReason = 'Sign in as an approved recipient organization to reserve.';
+    if (!request.sessionUser)
+      blockedReason = 'Sign in as an approved recipient organization to reserve.';
     else if (request.sessionUser.user.role !== 'RECIPIENT')
       blockedReason = 'Only recipient organizations can reserve food.';
-    else if (!caps?.canReserve) blockedReason = caps?.blockedReason ?? 'Your organization cannot reserve yet.';
-    else if (status === 'RESERVED_OUT') blockedReason = 'Fully reserved — check back, stock may return.';
+    else if (!caps?.canReserve)
+      blockedReason = caps?.blockedReason ?? 'Your organization cannot reserve yet.';
+    else if (status === 'RESERVED_OUT')
+      blockedReason = 'Fully reserved — check back, stock may return.';
     else if (status === 'PAUSED') blockedReason = 'The provider paused this listing.';
     else if (status === 'EXPIRED') blockedReason = 'This listing has expired.';
     else if (status === 'CANCELLED') blockedReason = 'The provider cancelled this listing.';
@@ -135,11 +138,18 @@ export function registerListingRoutes(app: FastifyInstance, ctx: AppContext): vo
 
   app.get('/api/provider/reservations', async (request) => {
     const sessionUser = requireRoleOnRequest(request, 'PROVIDER');
-    const { status, listing_id: listingId } = request.query as { status?: string; listing_id?: string };
-    const reservations = listReservationsForProvider({ db, config, emailSender: ctx.emailSender }, sessionUser, {
-      status,
-      listingId,
-    });
+    const { status, listing_id: listingId } = request.query as {
+      status?: string;
+      listing_id?: string;
+    };
+    const reservations = listReservationsForProvider(
+      { db, config, emailSender: ctx.emailSender },
+      sessionUser,
+      {
+        status,
+        listingId,
+      },
+    );
     return { reservations, count: reservations.length };
   });
 }

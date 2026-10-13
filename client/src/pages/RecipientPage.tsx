@@ -20,7 +20,9 @@ export function RecipientPage() {
   const { capabilities } = useAuth();
   const reservations = useApiQuery<{ reservations: ReservationView[] }>('/reservations');
   const impact = useApiQuery<ImpactStats>('/impact');
-  const [toasts, setToasts] = useState<Array<{ id: number; tone: 'success' | 'error' | 'info'; text: string }>>([]);
+  const [toasts, setToasts] = useState<
+    Array<{ id: number; tone: 'success' | 'error' | 'info'; text: string }>
+  >([]);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [revealedCode, setRevealedCode] = useState<string | null>(null);
 
@@ -51,7 +53,10 @@ export function RecipientPage() {
 
   return (
     <div>
-      <Toasts toasts={toasts} onDismiss={(id) => setToasts((current) => current.filter((t) => t.id !== id))} />
+      <Toasts
+        toasts={toasts}
+        onDismiss={(id) => setToasts((current) => current.filter((t) => t.id !== id))}
+      />
       <PageHeader
         title="My reservations"
         subtitle="Show the 6-digit code to the provider at pickup. Codes are single-use and expire with the pickup window."
@@ -68,14 +73,21 @@ export function RecipientPage() {
       />
 
       {!capabilities?.canReserve ? (
-        <p className="fr-card mb-6 border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">
+        <p
+          className="fr-card mb-6 border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"
+          role="status"
+        >
           {capabilities?.blockedReason ??
             'Your organization is pending approval, so you cannot reserve food yet.'}
         </p>
       ) : null}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <StatCard label="Active reservations" value={active.length} hint={`${pluralize(past.length, 'past reservation')}`} />
+        <StatCard
+          label="Active reservations"
+          value={active.length}
+          hint={`${pluralize(past.length, 'past reservation')}`}
+        />
         <StatCard
           label="Food collected"
           value={`${formatQuantity(impact.data?.totals.kg ?? 0)} kg`}
@@ -142,13 +154,16 @@ export function RecipientPage() {
                   <button
                     type="button"
                     className="fr-btn-secondary text-xs"
-                    onClick={() => setRevealedCode(revealedCode === reservation.id ? null : reservation.id)}
+                    onClick={() =>
+                      setRevealedCode(revealedCode === reservation.id ? null : reservation.id)
+                    }
                     aria-expanded={revealedCode === reservation.id}
                   >
                     {revealedCode === reservation.id ? 'Hide code' : 'Reveal code'}
                   </button>
                   <p className="text-xs text-stone-600">
-                    Pickup {formatDateTime(reservation.pickupStart)} → {formatDateTime(reservation.pickupEnd)}
+                    Pickup {formatDateTime(reservation.pickupStart)} →{' '}
+                    {formatDateTime(reservation.pickupEnd)}
                   </p>
                 </div>
 
@@ -176,7 +191,9 @@ export function RecipientPage() {
           History
         </h2>
         {past.length === 0 ? (
-          <p className="text-sm text-stone-600">Collected, cancelled and expired reservations will appear here.</p>
+          <p className="text-sm text-stone-600">
+            Collected, cancelled and expired reservations will appear here.
+          </p>
         ) : (
           <div className="fr-card overflow-x-auto">
             <table className="w-full text-left text-sm">
@@ -215,7 +232,9 @@ export function RecipientPage() {
                       <StatusBadge status={reservation.status} />
                     </td>
                     <td className="px-4 py-2">{formatDateTime(reservation.collectedAt)}</td>
-                    <td className="px-4 py-2 text-xs text-stone-600">{reservation.cancelReason ?? '—'}</td>
+                    <td className="px-4 py-2 text-xs text-stone-600">
+                      {reservation.cancelReason ?? '—'}
+                    </td>
                   </tr>
                 ))}
               </tbody>

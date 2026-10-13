@@ -21,7 +21,9 @@ export function AdminPage() {
     `/admin/organizations${statusFilter ? `?status=${statusFilter}` : ''}`,
   );
   const totals = useApiQuery<PlatformTotals>('/admin/totals');
-  const [toasts, setToasts] = useState<Array<{ id: number; tone: 'success' | 'error' | 'info'; text: string }>>([]);
+  const [toasts, setToasts] = useState<
+    Array<{ id: number; tone: 'success' | 'error' | 'info'; text: string }>
+  >([]);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [reviewError, setReviewError] = useState<string | null>(null);
@@ -40,7 +42,10 @@ export function AdminPage() {
         decision,
         note: notes[organization.id] ?? '',
       });
-      pushToast('success', `${organization.name} ${decision === 'APPROVE' ? 'approved' : 'rejected'}.`);
+      pushToast(
+        'success',
+        `${organization.name} ${decision === 'APPROVE' ? 'approved' : 'rejected'}.`,
+      );
       organizations.reload();
       totals.reload();
     } catch (cause) {
@@ -54,7 +59,10 @@ export function AdminPage() {
 
   return (
     <div>
-      <Toasts toasts={toasts} onDismiss={(id) => setToasts((current) => current.filter((t) => t.id !== id))} />
+      <Toasts
+        toasts={toasts}
+        onDismiss={(id) => setToasts((current) => current.filter((t) => t.id !== id))}
+      />
       <PageHeader
         title="Admin console"
         subtitle="Approve organizations before they can publish or reserve, and watch platform totals."
@@ -67,7 +75,11 @@ export function AdminPage() {
         {totals.loading ? (
           <LoadingState label="Loading totals…" />
         ) : totals.error ? (
-          <ErrorState message={totals.error} onRetry={totals.reload} title="Could not load totals" />
+          <ErrorState
+            message={totals.error}
+            onRetry={totals.reload}
+            title="Could not load totals"
+          />
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -96,7 +108,10 @@ export function AdminPage() {
               <BarChart
                 title="Rescued kg per month"
                 description="Verified pickups across the platform."
-                data={(totals.data?.monthly ?? []).map((month) => ({ month: month.month, value: month.kg }))}
+                data={(totals.data?.monthly ?? []).map((month) => ({
+                  month: month.month,
+                  value: month.kg,
+                }))}
                 unit="kg"
               />
             </div>
@@ -125,7 +140,10 @@ export function AdminPage() {
         </div>
 
         {reviewError ? (
-          <p className="fr-card mb-3 border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
+          <p
+            className="fr-card mb-3 border-red-200 bg-red-50 p-3 text-sm text-red-800"
+            role="alert"
+          >
             {reviewError}
           </p>
         ) : null}
@@ -161,11 +179,14 @@ export function AdminPage() {
                         : ''}
                     </p>
                     <p className="mt-1 text-xs text-stone-500">
-                      Registered {formatDate(organization.createdAt)} · {organization.userCount} user(s) ·{' '}
-                      {organization.listingCount} listings · {organization.reservationCount} reservations
+                      Registered {formatDate(organization.createdAt)} · {organization.userCount}{' '}
+                      user(s) · {organization.listingCount} listings ·{' '}
+                      {organization.reservationCount} reservations
                     </p>
                     {organization.reviewNote ? (
-                      <p className="mt-1 text-xs text-stone-600">Last note: {organization.reviewNote}</p>
+                      <p className="mt-1 text-xs text-stone-600">
+                        Last note: {organization.reviewNote}
+                      </p>
                     ) : null}
                   </div>
                   <StatusBadge status={organization.status} />
@@ -183,7 +204,10 @@ export function AdminPage() {
                         className="fr-input"
                         value={notes[organization.id] ?? ''}
                         onChange={(event) =>
-                          setNotes((current) => ({ ...current, [organization.id]: event.target.value }))
+                          setNotes((current) => ({
+                            ...current,
+                            [organization.id]: event.target.value,
+                          }))
                         }
                         placeholder="e.g. Food safety certificate verified"
                       />

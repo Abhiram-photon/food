@@ -26,9 +26,7 @@ export class ConsoleEmailSender implements EmailSender {
   async send(message: EmailMessage): Promise<void> {
     this.sent.push(message);
     if (this.enabled) {
-      console.log(
-        `[email:console] to=${message.to} subject="${message.subject}"\n${message.body}`,
-      );
+      console.log(`[email:console] to=${message.to} subject="${message.subject}"\n${message.body}`);
     }
   }
 }

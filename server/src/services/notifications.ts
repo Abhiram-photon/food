@@ -20,7 +20,16 @@ export function createNotification(db: Db, input: NotificationInput): Notificati
   db.run(
     `INSERT INTO notifications (id, user_id, type, title, body, link, entity_id, read_at, created_at)
      VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?)`,
-    [id, input.userId, input.type, input.title, input.body ?? '', input.link ?? null, input.entityId ?? null, now],
+    [
+      id,
+      input.userId,
+      input.type,
+      input.title,
+      input.body ?? '',
+      input.link ?? null,
+      input.entityId ?? null,
+      now,
+    ],
   );
   return db.get<NotificationRow>('SELECT * FROM notifications WHERE id = ?', [id])!;
 }

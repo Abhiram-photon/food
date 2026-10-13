@@ -10,7 +10,6 @@ import {
   verifyPickupCode as verifyPickupCodeHash,
 } from '../lib/crypto';
 import { badRequest, conflict, forbidden, locked, notFound } from '../lib/errors';
-import { nowIso } from '../lib/time';
 import type { EmailSender } from '../emails/sender';
 import { capabilitiesFor, requireApprovedOrganization, type SessionUser } from './auth';
 import { computeListingStatus, sweepStatuses } from './listings';
@@ -56,7 +55,9 @@ export function resolvePickupSlot(
   }
   if (end <= start) throw badRequest('Pickup slot end must be after the pickup slot start.');
   if (end <= nowMs) {
-    throw badRequest('Your pickup slot must end in the future.', { pickupEnd: new Date(end).toISOString() });
+    throw badRequest('Your pickup slot must end in the future.', {
+      pickupEnd: new Date(end).toISOString(),
+    });
   }
   return {
     pickupStart: new Date(Math.max(start, nowMs)).toISOString(),
@@ -86,14 +87,20 @@ export function createReservation(
     throw conflict('This listing is fully reserved.', 'RESERVED_OUT');
   }
   if (status !== 'ACTIVE') {
-    throw conflict(`This listing is not open for reservations (status: ${status}).`, 'LISTING_NOT_ACTIVE');
+    throw conflict(
+      `This listing is not open for reservations (status: ${status}).`,
+      'LISTING_NOT_ACTIVE',
+    );
   }
 
   const provider = ctx.db.get<OrganizationRow>('SELECT * FROM organizations WHERE id = ?', [
     listing.provider_id,
   ]);
   if (!provider || provider.status !== 'APPROVED') {
-    throw conflict('This provider is not approved to receive reservations.', 'PROVIDER_NOT_APPROVED');
+    throw conflict(
+      'This provider is not approved to receive reservations.',
+      'PROVIDER_NOT_APPROVED',
+    );
   }
 
   const quantity = Number(input.quantity);
@@ -290,7 +297,9 @@ export function listReservationsForProvider(
   const rows = ctx.db.all<ReservationRow>(sql, params);
   // Providers deliberately never see the pickup code: the recipient shows it at pickup,
   // and the code is the proof of handover (see docs/DECISIONS.md).
-  const views = rows.map((row) => toReservationView(ctx, row, { viewer: actor, revealCode: false }));
+  const views = rows.map((row) =>
+    toReservationView(ctx, row, { viewer: actor, revealCode: false }),
+  );
   if (!options.status || options.status === 'ALL') return views;
   return views.filter((view) => view.status === options.status);
 }
@@ -300,7 +309,9 @@ export function getReservationForViewer(
   viewer: SessionUser | null,
   reservationId: string,
 ): ReservationView {
-  const row = ctx.db.get<ReservationRow>('SELECT * FROM reservations WHERE id = ?', [reservationId]);
+  const row = ctx.db.get<ReservationRow>('SELECT * FROM reservations WHERE id = ?', [
+    reservationId,
+  ]);
   if (!row) throw notFound('Reservation not found.');
   const listing = ctx.db.get<ListingRow>('SELECT * FROM listings WHERE id = ?', [row.listing_id]);
   const isRecipientOwner = viewer?.organization?.id === row.recipient_id;
@@ -337,7 +348,9 @@ export function cancelReservation(
   reservationId: string,
   reason?: string,
 ): ReservationView {
-  const row = ctx.db.get<ReservationRow>('SELECT * FROM reservations WHERE id = ?', [reservationId]);
+  const row = ctx.db.get<ReservationRow>('SELECT * FROM reservations WHERE id = ?', [
+    reservationId,
+  ]);
   if (!row) throw notFound('Reservation not found.');
   const listing = ctx.db.get<ListingRow>('SELECT * FROM listings WHERE id = ?', [row.listing_id]);
   if (!listing) throw notFound('Listing not found.');
@@ -348,17 +361,21 @@ export function cancelReservation(
   if (!isRecipientOwner && !isProviderOwner && !isAdmin) throw notFound('Reservation not found.');
 
   if (row.status !== 'RESERVED') {
-    throw conflict(`This reservation is already ${row.status.toLowerCase()}.`, 'RESERVATION_NOT_ACTIVE');
+    throw conflict(
+      `This reservation is already ${row.status.toLowerCase()}.`,
+      'RESERVATION_NOT_ACTIVE',
+    );
   }
   if (isProviderOwner && !isRecipientOwner && !reason?.trim()) {
     throw badRequest('A reason is required when the provider cancels a reservation.');
   }
 
-  const cancelledBy = isAdmin && !isRecipientOwner && !isProviderOwner
-    ? 'ADMIN'
-    : isProviderOwner && !isRecipientOwner
-      ? 'PROVIDER'
-      : 'RECIPIENT';
+  const cancelledBy =
+    isAdmin && !isRecipientOwner && !isProviderOwner
+      ? 'ADMIN'
+      : isProviderOwner && !isRecipientOwner
+        ? 'PROVIDER'
+        : 'RECIPIENT';
   const now = new Date();
 
   const updated = ctx.db.transaction(() => {
@@ -443,7 +460,8 @@ export function verifyPickupCode(
     ]);
     if (!row) throw notFound('Reservation not found.');
     const listing = ctx.db.get<ListingRow>('SELECT * FROM listings WHERE id = ?', [row.listing_id]);
-    if (!listing || listing.provider_id !== organizationId) throw notFound('Reservation not found.');
+    if (!listing || listing.provider_id !== organizationId)
+      throw notFound('Reservation not found.');
   } else {
     // Code-only verification (the "type the code" flow): locate the reservation whose
     // salted hash matches. Pending reservations are searched first, then finished ones
@@ -478,7 +496,9 @@ export function verifyPickupCode(
     throw conflict(`This reservation is ${row.status.toLowerCase()}.`, 'RESERVATION_NOT_ACTIVE');
   }
   if (row.locked_at) {
-    throw locked('This reservation is locked after too many incorrect code attempts. Contact an admin.');
+    throw locked(
+      'This reservation is locked after too many incorrect code attempts. Contact an admin.',
+    );
   }
 
   const startMs = Date.parse(row.pickup_start);
@@ -499,12 +519,10 @@ export function verifyPickupCode(
   if (!verifyPickupCodeFor(row, input.code, ctx.config.appSecret)) {
     const attempts = row.code_attempts + 1;
     const lockedAt = attempts >= ctx.config.maxVerifyAttempts ? now.toISOString() : null;
-    ctx.db.run('UPDATE reservations SET code_attempts = ?, locked_at = ?, updated_at = ? WHERE id = ?', [
-      attempts,
-      lockedAt,
-      now.toISOString(),
-      row.id,
-    ]);
+    ctx.db.run(
+      'UPDATE reservations SET code_attempts = ?, locked_at = ?, updated_at = ? WHERE id = ?',
+      [attempts, lockedAt, now.toISOString(), row.id],
+    );
     const attemptsRemaining = Math.max(0, ctx.config.maxVerifyAttempts - attempts);
     if (lockedAt) {
       throw locked(
@@ -518,9 +536,14 @@ export function verifyPickupCode(
   }
 
   const updated = ctx.db.transaction(() => {
-    const current = ctx.db.get<ReservationRow>('SELECT * FROM reservations WHERE id = ?', [row!.id])!;
+    const current = ctx.db.get<ReservationRow>('SELECT * FROM reservations WHERE id = ?', [
+      row!.id,
+    ])!;
     if (current.status !== 'RESERVED') {
-      throw conflict('This reservation is no longer available to verify.', 'RESERVATION_NOT_ACTIVE');
+      throw conflict(
+        'This reservation is no longer available to verify.',
+        'RESERVATION_NOT_ACTIVE',
+      );
     }
     ctx.db.run(
       `UPDATE reservations SET status = 'COLLECTED', collected_at = ?, code_attempts = 0, updated_at = ?

@@ -92,7 +92,11 @@ describe('auth HTTP flow', () => {
     };
     const first = await inject(harness.app, { method: 'POST', url: '/api/auth/register', payload });
     expect(first.status).toBe(201);
-    const second = await inject(harness.app, { method: 'POST', url: '/api/auth/register', payload });
+    const second = await inject(harness.app, {
+      method: 'POST',
+      url: '/api/auth/register',
+      payload,
+    });
     expect(second.status).toBe(409);
     expect(second.body.error.code).toBe('EMAIL_TAKEN');
   });

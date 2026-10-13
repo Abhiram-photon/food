@@ -38,10 +38,12 @@ export function RegisterPage() {
     if (!form.email.includes('@')) errors.email = 'Enter a valid email address';
     if (form.password.length < 8) errors.password = 'Password must be at least 8 characters';
     if (form.displayName.trim().length < 2) errors.displayName = 'Tell us your name';
-    if (form.organizationName.trim().length < 2) errors.organizationName = 'Organization name is required';
+    if (form.organizationName.trim().length < 2)
+      errors.organizationName = 'Organization name is required';
     const lat = Number(form.latitude);
     const lng = Number(form.longitude);
-    if (!Number.isFinite(lat) || lat < -90 || lat > 90) errors.latitude = 'Latitude must be between -90 and 90';
+    if (!Number.isFinite(lat) || lat < -90 || lat > 90)
+      errors.latitude = 'Latitude must be between -90 and 90';
     if (!Number.isFinite(lng) || lng < -180 || lng > 180)
       errors.longitude = 'Longitude must be between -180 and 180';
     setFieldErrors(errors);
@@ -76,10 +78,12 @@ export function RegisterPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="text-2xl font-bold tracking-tight text-stone-900">Register your organization</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-stone-900">
+        Register your organization
+      </h1>
       <p className="mt-1 text-sm text-stone-600">
-        New accounts start as <strong>pending</strong>. A FreshRelay admin reviews every organization
-        before it can publish listings or reserve food.
+        New accounts start as <strong>pending</strong>. A FreshRelay admin reviews every
+        organization before it can publish listings or reserve food.
       </p>
 
       <form className="fr-card mt-6 space-y-5 p-6" onSubmit={handleSubmit} noValidate>
@@ -105,7 +109,9 @@ export function RegisterPage() {
                   }}
                   className="h-4 w-4"
                 />
-                {option === 'PROVIDER' ? 'A food provider (surplus to give)' : 'A recipient (food needed)'}
+                {option === 'PROVIDER'
+                  ? 'A food provider (surplus to give)'
+                  : 'A recipient (food needed)'}
               </label>
             ))}
           </div>
@@ -121,7 +127,12 @@ export function RegisterPage() {
               autoComplete="name"
             />
           </Field>
-          <Field label="Organization name" htmlFor="organizationName" required error={fieldErrors.organizationName}>
+          <Field
+            label="Organization name"
+            htmlFor="organizationName"
+            required
+            error={fieldErrors.organizationName}
+          >
             <input
               id="organizationName"
               className="fr-input"
@@ -144,7 +155,11 @@ export function RegisterPage() {
               ))}
             </select>
           </Field>
-          <Field label="Phone" htmlFor="phone" hint="Optional, shared only with matched organizations.">
+          <Field
+            label="Phone"
+            htmlFor="phone"
+            hint="Optional, shared only with matched organizations."
+          >
             <input
               id="phone"
               className="fr-input"

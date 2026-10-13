@@ -64,10 +64,9 @@ interface ProviderInfo {
 }
 
 function providerFor(db: Db, row: ListingRow): ProviderInfo {
-  const org = db.get<OrganizationRow>(
-    'SELECT id, name, type FROM organizations WHERE id = ?',
-    [row.provider_id],
-  );
+  const org = db.get<OrganizationRow>('SELECT id, name, type FROM organizations WHERE id = ?', [
+    row.provider_id,
+  ]);
   return {
     id: org?.id ?? row.provider_id,
     name: org?.name ?? 'Unknown provider',
@@ -145,14 +144,13 @@ export function toOwnerListing(db: Db, row: ListingRow, now: Date = new Date()):
   };
 }
 
-function validateWindow(input: {
-  windowStart: string;
-  windowEnd: string;
-  expiresAt?: string;
-}): { expiresAt: string } {
+function validateWindow(input: { windowStart: string; windowEnd: string; expiresAt?: string }): {
+  expiresAt: string;
+} {
   const start = Date.parse(input.windowStart);
   const end = Date.parse(input.windowEnd);
-  if (!Number.isFinite(start) || !Number.isFinite(end)) throw badRequest('Pickup window is invalid.');
+  if (!Number.isFinite(start) || !Number.isFinite(end))
+    throw badRequest('Pickup window is invalid.');
   if (end <= start) throw badRequest('Pickup window end must be after the pickup window start.');
   const expiresAt = input.expiresAt ? Date.parse(input.expiresAt) : end;
   if (!Number.isFinite(expiresAt)) throw badRequest('expires_at is invalid.');
@@ -166,7 +164,10 @@ function validateWindow(input: {
 }
 
 function normalizeAllergens(allergens: string[] | undefined): string {
-  return (allergens ?? []).map((a) => a.trim()).filter(Boolean).join(', ');
+  return (allergens ?? [])
+    .map((a) => a.trim())
+    .filter(Boolean)
+    .join(', ');
 }
 
 export function createListing(
@@ -383,11 +384,7 @@ export function applyStatusAction(
       ]);
     } else {
       const desired: ListingStatus =
-        action === 'PAUSE'
-          ? 'PAUSED'
-          : row.quantity_remaining <= 0
-            ? 'RESERVED_OUT'
-            : 'ACTIVE';
+        action === 'PAUSE' ? 'PAUSED' : row.quantity_remaining <= 0 ? 'RESERVED_OUT' : 'ACTIVE';
       ctx.db.run('UPDATE listings SET status = ?, updated_at = ? WHERE id = ?', [
         desired,
         nowStr,
@@ -447,7 +444,11 @@ export interface VisibilityResult {
   isAdmin: boolean;
 }
 
-export function getListingForViewer(db: Db, listingId: string, viewer: SessionUser | null): VisibilityResult {
+export function getListingForViewer(
+  db: Db,
+  listingId: string,
+  viewer: SessionUser | null,
+): VisibilityResult {
   const row = db.get<ListingRow>('SELECT * FROM listings WHERE id = ?', [listingId]);
   if (!row) throw notFound('Listing not found.');
   const isOwner = Boolean(viewer?.organization && row.provider_id === viewer.organization.id);
@@ -460,11 +461,7 @@ export function getListingForViewer(db: Db, listingId: string, viewer: SessionUs
   return { row, isOwner, isAdmin };
 }
 
-export function searchListings(
-  ctx: ListingContext,
-  query: SearchQuery,
-  viewer: SessionUser | null = null,
-): SearchResponse {
+export function searchListings(ctx: ListingContext, query: SearchQuery): SearchResponse {
   const { db, config } = ctx;
   const now = new Date();
   sweepStatuses(db, now);

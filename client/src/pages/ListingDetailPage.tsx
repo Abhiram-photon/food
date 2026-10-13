@@ -45,7 +45,8 @@ export function ListingDetailPage() {
   }
 
   if (loading) return <LoadingState label="Loading listing…" />;
-  if (error) return <ErrorState message={error} onRetry={reload} title="Could not load this listing" />;
+  if (error)
+    return <ErrorState message={error} onRetry={reload} title="Could not load this listing" />;
   if (!listing) return <ErrorState message="Listing not found." title="Not found" />;
 
   const blockedReason = data?.reservationBlockedReason ?? null;
@@ -63,7 +64,11 @@ export function ListingDetailPage() {
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <CountdownBadge expiresAt={listing.expiresAt} secondsLeft={listing.secondsLeft} label="Expires" />
+              <CountdownBadge
+                expiresAt={listing.expiresAt}
+                secondsLeft={listing.secondsLeft}
+                label="Expires"
+              />
               <StatusBadge status={listing.status} />
             </div>
           </div>
@@ -117,13 +122,16 @@ export function ListingDetailPage() {
                 ) : (
                   <span className="text-stone-500">
                     Hidden until you hold a reservation (approx.{' '}
-                    {listing.approximateLatitude.toFixed(2)}, {listing.approximateLongitude.toFixed(2)})
+                    {listing.approximateLatitude.toFixed(2)},{' '}
+                    {listing.approximateLongitude.toFixed(2)})
                   </span>
                 )}
               </dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wide text-stone-500">Pickup instructions</dt>
+              <dt className="text-xs uppercase tracking-wide text-stone-500">
+                Pickup instructions
+              </dt>
               <dd className="text-sm text-stone-900">
                 {data?.listing.pickupInstructions ?? 'Shared with the recipient after reserving.'}
               </dd>
@@ -133,10 +141,13 @@ export function ListingDetailPage() {
 
         {data?.myReservation ? (
           <div className="fr-card border-emerald-200 bg-emerald-50 p-6">
-            <h2 className="text-base font-semibold text-emerald-900">You already reserved this listing</h2>
+            <h2 className="text-base font-semibold text-emerald-900">
+              You already reserved this listing
+            </h2>
             <p className="mt-1 text-sm text-emerald-800">
               {formatQuantity(data.myReservation.quantity)} {listing.unit} · pickup{' '}
-              {formatDateTime(data.myReservation.pickupStart)} → {formatDateTime(data.myReservation.pickupEnd)}
+              {formatDateTime(data.myReservation.pickupStart)} →{' '}
+              {formatDateTime(data.myReservation.pickupEnd)}
             </p>
             {data.myReservation.code ? (
               <p className="mt-3 text-2xl font-bold tracking-[0.3em] text-emerald-900">
@@ -163,8 +174,8 @@ export function ListingDetailPage() {
                 {success.pickupCode}
               </p>
               <p className="text-sm text-stone-600">
-                {formatQuantity(success.reservation.quantity)} {success.reservation.unit} reserved for{' '}
-                {formatDateTime(success.reservation.pickupStart)} →{' '}
+                {formatQuantity(success.reservation.quantity)} {success.reservation.unit} reserved
+                for {formatDateTime(success.reservation.pickupStart)} →{' '}
                 {formatDateTime(success.reservation.pickupEnd)}
               </p>
               <div className="flex gap-2">
@@ -186,7 +197,10 @@ export function ListingDetailPage() {
           ) : (
             <form className="mt-3 space-y-4" onSubmit={handleReserve}>
               {blockedReason ? (
-                <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900" role="status">
+                <p
+                  className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900"
+                  role="status"
+                >
                   {blockedReason}
                 </p>
               ) : null}
@@ -232,7 +246,11 @@ export function ListingDetailPage() {
                 />
               </Field>
 
-              <Field label="Pickup until" htmlFor="pickupEnd" hint="Defaults to the end of the provider window.">
+              <Field
+                label="Pickup until"
+                htmlFor="pickupEnd"
+                hint="Defaults to the end of the provider window."
+              >
                 <input
                   id="pickupEnd"
                   className="fr-input"
@@ -243,7 +261,11 @@ export function ListingDetailPage() {
                 />
               </Field>
 
-              <Field label="Note for the provider" htmlFor="note" hint="Optional — e.g. van size or arrival time.">
+              <Field
+                label="Note for the provider"
+                htmlFor="note"
+                hint="Optional — e.g. van size or arrival time."
+              >
                 <textarea
                   id="note"
                   className="fr-input"
@@ -254,8 +276,16 @@ export function ListingDetailPage() {
                 />
               </Field>
 
-              <button type="submit" className="fr-btn-primary w-full" disabled={Boolean(blockedReason) || submitting}>
-                {submitting ? 'Reserving…' : blockedReason ? 'Reservation unavailable' : 'Reserve pickup'}
+              <button
+                type="submit"
+                className="fr-btn-primary w-full"
+                disabled={Boolean(blockedReason) || submitting}
+              >
+                {submitting
+                  ? 'Reserving…'
+                  : blockedReason
+                    ? 'Reservation unavailable'
+                    : 'Reserve pickup'}
               </button>
 
               {!user ? (

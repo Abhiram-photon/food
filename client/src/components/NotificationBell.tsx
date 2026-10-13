@@ -142,7 +142,8 @@ export function NotificationBellContainer() {
         setUnreadCount(response.unreadCount);
         setError(null);
       } catch (cause) {
-        if (!cancelled) setError(cause instanceof Error ? cause.message : 'Could not load notifications');
+        if (!cancelled)
+          setError(cause instanceof Error ? cause.message : 'Could not load notifications');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -159,7 +160,9 @@ export function NotificationBellContainer() {
   async function markAllRead() {
     try {
       await api.post('/notifications/read', { all: true });
-      setNotifications((current) => current.map((n) => ({ ...n, readAt: new Date().toISOString() })));
+      setNotifications((current) =>
+        current.map((n) => ({ ...n, readAt: new Date().toISOString() })),
+      );
       setUnreadCount(0);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not update notifications');

@@ -260,7 +260,9 @@ describe('route smoke tests', () => {
     expect(
       await screen.findByRole('heading', { name: /Good food should feed people, not bins/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/1\.05 billion tonnes of food were wasted in 2022/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/1\.05 billion tonnes of food were wasted in 2022/),
+    ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /List surplus food/ })).toBeInTheDocument();
     expect(await screen.findByText('340 kg')).toBeInTheDocument();
   });
@@ -288,7 +290,9 @@ describe('route smoke tests', () => {
   it('renders the listing detail page', async () => {
     stubApi(null);
     renderAt('/listings/listing-1');
-    expect(await screen.findByRole('heading', { name: 'Surplus bakery bread' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Surplus bakery bread' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Reservation unavailable/ })).toBeDisabled();
   });
 

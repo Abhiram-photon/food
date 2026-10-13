@@ -1,7 +1,9 @@
 import type { ZodType } from 'zod';
 import { AppError } from '../lib/errors';
 
-function zodToAppError(error: { issues: Array<{ path: PropertyKey[]; message: string }> }): AppError {
+function zodToAppError(error: {
+  issues: Array<{ path: PropertyKey[]; message: string }>;
+}): AppError {
   const details = error.issues.map((issue) => ({
     path: issue.path.join('.'),
     message: issue.message,

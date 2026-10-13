@@ -143,6 +143,7 @@ describe('role guards and organization approval', () => {
 
   it('returns 404 when a recipient cancels someone else’s reservation', async () => {
     const listing = createListingFixture(harness.db, { providerId: provider.organizationId! });
+    expect(listing.providerId).toBe(provider.organizationId);
     const created = await inject(harness.app, {
       method: 'POST',
       url: `/api/listings/${listing.id}/reservations`,
@@ -225,7 +226,7 @@ describe('role guards and organization approval', () => {
   });
 
   it('refuses verification from non-providers', async () => {
-    const listing = createListingFixture(harness.db, { providerId: provider.organizationId! });
+    createListingFixture(harness.db, { providerId: provider.organizationId! });
     const response = await inject(harness.app, {
       method: 'POST',
       url: '/api/reservations/verify',

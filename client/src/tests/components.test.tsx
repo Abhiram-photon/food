@@ -133,7 +133,11 @@ describe('BarChart', () => {
 
   it('shows the empty message when every value is zero', () => {
     render(
-      <BarChart title="Rescued kg per month" data={[{ month: '2026-10', value: 0 }]} emptyMessage="Nothing yet" />,
+      <BarChart
+        title="Rescued kg per month"
+        data={[{ month: '2026-10', value: 0 }]}
+        emptyMessage="Nothing yet"
+      />,
     );
     expect(screen.getByText('Nothing yet')).toBeInTheDocument();
     expect(screen.queryByTestId('bar-chart')).not.toBeInTheDocument();

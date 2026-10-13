@@ -51,7 +51,9 @@ describe('LoginPage', () => {
           });
         }
         return new Response(
-          JSON.stringify({ error: { code: 'UNAUTHENTICATED', message: 'Email or password is incorrect.' } }),
+          JSON.stringify({
+            error: { code: 'UNAUTHENTICATED', message: 'Email or password is incorrect.' },
+          }),
           { status: 401, headers: { 'Content-Type': 'application/json' } },
         );
       }),
@@ -146,8 +148,12 @@ describe('ListingDetailPage', () => {
       if (url.includes('/api/listings/listing-1')) {
         return {
           ...detail,
-          listing: { ...detail.listing, pickupAddress: '12-2-417, Mehdipatnam Main Road, Hyderabad' },
-          reservationBlockedReason: 'This listing is fully reserved — check back, stock may return.',
+          listing: {
+            ...detail.listing,
+            pickupAddress: '12-2-417, Mehdipatnam Main Road, Hyderabad',
+          },
+          reservationBlockedReason:
+            'This listing is fully reserved — check back, stock may return.',
           canReserve: false,
           myReservation: {
             id: 'res-1',

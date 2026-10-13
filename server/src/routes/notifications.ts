@@ -21,6 +21,9 @@ export function registerNotificationRoutes(app: FastifyInstance, ctx: AppContext
       ids: body.ids,
       all: body.all ?? true,
     });
-    return { updated, unreadCount: listNotifications(db, sessionUser.user.id, { limit: 1 }).unreadCount };
+    return {
+      updated,
+      unreadCount: listNotifications(db, sessionUser.user.id, { limit: 1 }).unreadCount,
+    };
   });
 }

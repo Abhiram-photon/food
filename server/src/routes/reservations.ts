@@ -8,7 +8,11 @@ import {
   listReservationsForRecipient,
   verifyPickupCode,
 } from '../services/reservations';
-import { cancelReservationSchema, createReservationSchema, verifyPickupSchema } from '../schemas/reservations';
+import {
+  cancelReservationSchema,
+  createReservationSchema,
+  verifyPickupSchema,
+} from '../schemas/reservations';
 
 export function registerReservationRoutes(app: FastifyInstance, ctx: AppContext): void {
   const { db, config, emailSender } = ctx;
@@ -66,6 +70,10 @@ export function registerReservationRoutes(app: FastifyInstance, ctx: AppContext)
     const { id } = request.params as { id: string };
     const input = parseInput(verifyPickupSchema, request.body ?? {});
     const result = verifyPickupCode(serviceCtx, sessionUser, { ...input, reservationId: id });
-    return { reservation: result.reservation, attemptsRemaining: result.attemptsRemaining, ok: true };
+    return {
+      reservation: result.reservation,
+      attemptsRemaining: result.attemptsRemaining,
+      ok: true,
+    };
   });
 }
