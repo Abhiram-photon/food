@@ -68,6 +68,9 @@ everything deliberately deferred. Written so a future maintainer can see *why*, 
   the exact radius. Only `ACTIVE`, non-expired listings from `APPROVED` provider organizations are
   returned, capped at 500 candidates. `radius_km` defaults to 5 and is capped at 50 (a larger value is a
   400, not a silent clamp).
+- **The browse page opens at a 10 km radius** (the server default stays 5 km when `radius_km` is
+  omitted, exactly as specified). At 5 km the seeded demo shows only the Charminar cluster, so the UI
+  starts wider to make the whole city visible; browser geolocation is a deferred feature.
 - **Facets** (`availableStorage`, `availableCategories`) are computed from the radius-filtered candidate
   set *before* the storage/category filters, so the filter dropdowns do not empty themselves.
 - **Editing** a listing with live reservations is constrained: quantity cannot drop below the reserved
@@ -205,3 +208,5 @@ online, and hard-locked after 5 failures.
 - Multi-org users, per-user invitation flows, and admin unlocking of locked reservations
 - Pagination/infinite scroll on search (hard 500-candidate cap instead)
 - Real-time updates (polling only)
+- Browser geolocation ("near me") and address search/geocoding — the browse page defaults to the
+  Hyderabad city centre

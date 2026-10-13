@@ -11,6 +11,7 @@ import {
   toPublicListing,
   updateListing,
   sweepStatuses,
+  computeListingStatus,
 } from '../services/listings';
 import {
   listingInputSchema,
@@ -20,7 +21,6 @@ import {
 } from '../schemas/listings';
 import type { ListingDetailResponse } from '../schemas/listings';
 import { capabilitiesFor } from '../services/auth';
-import { computeListingStatus } from '../services/listings';
 import { toReservationView, listReservationsForProvider } from '../services/reservations';
 import { notFound } from '../lib/errors';
 import type { ListingRow, ReservationRow } from '../db/types';

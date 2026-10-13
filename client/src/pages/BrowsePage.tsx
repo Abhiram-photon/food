@@ -7,7 +7,13 @@ import { MapView } from '../components/MapView';
 import { humanizeEnum } from '../lib/format';
 import { STORAGE_TYPES, type PublicListing, type SearchResponse } from '@shared';
 
+/**
+ * Default search origin. The API defaults to a 5 km radius when `radius_km` is omitted;
+ * the UI opens at 10 km so a whole city's listings are visible straight away
+ * (browser geolocation is a deferred feature — see docs/DECISIONS.md).
+ */
 const HYDERABAD = { lat: 17.385, lng: 78.4867 };
+const DEFAULT_RADIUS_KM = '10';
 
 export function BrowsePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,7 +22,7 @@ export function BrowsePage() {
 
   const lat = searchParams.get('lat') ?? String(HYDERABAD.lat);
   const lng = searchParams.get('lng') ?? String(HYDERABAD.lng);
-  const radius = searchParams.get('radius_km') ?? '5';
+  const radius = searchParams.get('radius_km') ?? DEFAULT_RADIUS_KM;
   const storage = searchParams.get('storage') ?? '';
   const category = searchParams.get('category') ?? '';
   const sort = (searchParams.get('sort') ?? 'nearest') as 'nearest' | 'ending_soon';
