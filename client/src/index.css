@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
+
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  @apply bg-stone-50 text-stone-900 antialiased;
+}
+
+/* Visible focus styles everywhere (keyboard accessibility). */
+:focus-visible {
+  @apply outline-none ring-2 ring-emerald-600 ring-offset-2 ring-offset-white;
+}
+
+/* --- small design-system classes -------------------------------------------
+   Tailwind v4 cannot @apply a custom class inside another custom class, so the
+   shared button shell is declared once for all three variants. */
+
+.fr-card {
+  @apply rounded-xl border border-stone-200 bg-white shadow-sm;
+}
+
+.fr-input {
+  @apply w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 shadow-sm
+         placeholder:text-stone-400 focus:border-emerald-500;
+}
+
+.fr-label {
+  @apply mb-1 block text-sm font-medium text-stone-700;
+}
+
+.fr-btn,
+.fr-btn-primary,
+.fr-btn-secondary,
+.fr-btn-danger {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold
+         transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+.fr-btn-primary {
+  @apply bg-emerald-700 text-white hover:bg-emerald-800;
+}
+
+.fr-btn-secondary {
+  @apply border border-stone-300 bg-white text-stone-800 hover:bg-stone-100;
+}
+
+.fr-btn-danger {
+  @apply border border-red-200 bg-red-50 text-red-700 hover:bg-red-100;
+}
+
+.fr-badge {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+}
+
+.leaflet-container {
+  @apply z-0 h-full w-full rounded-xl;
+}

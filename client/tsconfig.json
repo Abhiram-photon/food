@@ -7,7 +7,9 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["../server/src/schemas/*"]
+      "@shared": ["../server/src/schemas/index.ts"],
+      "@shared/*": ["../server/src/schemas/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "../server/src/schemas/**/*.ts"]

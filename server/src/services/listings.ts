@@ -118,6 +118,7 @@ export function toPublicListing(
   };
   if (options.revealExactLocation) {
     view.pickupAddress = row.pickup_address;
+    view.pickupInstructions = row.pickup_instructions;
   }
   return view;
 }

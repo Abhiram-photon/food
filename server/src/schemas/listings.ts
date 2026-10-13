@@ -70,6 +70,7 @@ export interface PublicListing {
   approximateLongitude: number;
   /** Present only when the viewer holds a reservation on this listing. */
   pickupAddress?: string | null;
+  pickupInstructions?: string | null;
   city?: string | null;
   windowStart: string;
   windowEnd: string;
